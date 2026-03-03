@@ -34,7 +34,11 @@ function vsGenerateCode() {
 
 function vsGetAllQuestions() {
   const all = [];
-  Object.values(QUESTIONS).forEach(arr => all.push(...arr));
+  Object.values(QUESTIONS).forEach(grades =>
+    Object.values(grades).forEach(sems =>
+      Object.values(sems).forEach(qs => all.push(...qs))
+    )
+  );
   return all;
 }
 

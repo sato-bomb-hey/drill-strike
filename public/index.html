@@ -23,7 +23,7 @@
     <p class="title-sub">〜覚醒のレジェンドナイン〜</p>
     <div class="title-stats" id="title-stats"></div>
     <div class="title-buttons">
-      <button class="btn-primary" onclick="showScreen('field-select-screen')">
+      <button class="btn-primary" onclick="showSelectScreen()">
         <span class="btn-icon">⚔</span> 出陣する
       </button>
       <button class="btn-secondary" onclick="showScreen('team-screen')">
@@ -42,29 +42,16 @@
   </div>
 </div>
 
-<!-- ========== 分野選択画面 ========== -->
-<div id="field-select-screen" class="screen">
+<!-- ========== 選択画面（学年→学期→教科→モード） ========== -->
+<div id="select-screen" class="screen">
   <div class="screen-header">
-    <button class="back-btn" onclick="showScreen('title-screen')">◀ 戻る</button>
-    <h2 class="screen-title">戦場を選べ</h2>
+    <button class="back-btn" id="select-back-btn" onclick="selectBack()">◀ 戻る</button>
+    <h2 class="screen-title" id="select-title">学年を選べ</h2>
   </div>
-  <div class="field-select-content">
-    <p class="field-select-desc">汝が挑む封印の扉を選択せよ</p>
-    <div class="field-cards">
-      <button class="field-card" onclick="startBattle('geography')">
-        <div class="field-card-icon">🌍</div>
-        <div class="field-card-name">大地の記憶</div>
-        <div class="field-card-sub">地理</div>
-        <div class="field-card-desc">世界の地形・気候・産業の封印を解け</div>
-      </button>
-      <button class="field-card" onclick="startBattle('history')">
-        <div class="field-card-icon">⚔️</div>
-        <div class="field-card-name">時の封印</div>
-        <div class="field-card-sub">歴史</div>
-        <div class="field-card-desc">日本史の謎と封じられた英雄を解放せよ</div>
-      </button>
-    </div>
+  <div class="select-breadcrumb-bar">
+    <span id="select-breadcrumb"></span>
   </div>
+  <div class="select-step-content" id="select-step-content"></div>
 </div>
 
 <!-- ========== バトル画面 ========== -->
@@ -153,7 +140,7 @@
       <button class="btn-primary" id="result-gacha-btn" onclick="goToGacha()">
         ✨ 英雄召喚へ
       </button>
-      <button class="btn-secondary" onclick="showScreen('field-select-screen')">
+      <button class="btn-secondary" onclick="showSelectScreen()">
         ⚔ 再挑戦
       </button>
       <button class="btn-ghost" onclick="showScreen('title-screen')">
@@ -336,6 +323,7 @@
 </div>
 
 <script src="firebase-config.js"></script>
+<script src="questions.js"></script>
 <script src="game.js"></script>
 <script src="battle.js"></script>
 </body>

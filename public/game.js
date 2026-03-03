@@ -1,41 +1,9 @@
 'use strict';
 
-/* ============================================
+/* ============================================================
    蒼穹の歴史戦線 — ゲームロジック
-   ============================================ */
-
-// ========== 問題データ ==========
-
-const QUESTIONS = {
-  geography: [
-    { id:'g01', text:'日本の首都はどこ？', choices:['大阪','東京','名古屋','福岡'], answer:1 },
-    { id:'g02', text:'世界で最も長い川は？', choices:['アマゾン川','長江','ナイル川','ミシシッピ川'], answer:2 },
-    { id:'g03', text:'日本の最高峰は？', choices:['白山','槍ヶ岳','北岳','富士山'], answer:3 },
-    { id:'g04', text:'赤道が通過しない大陸はどれ？', choices:['アフリカ大陸','南アメリカ大陸','ユーラシア大陸','オーストラリア大陸'], answer:2 },
-    { id:'g05', text:'6大陸の中で最も面積が大きいのは？', choices:['アフリカ大陸','ユーラシア大陸','北アメリカ大陸','南アメリカ大陸'], answer:1 },
-    { id:'g06', text:'日本の標準時子午線（東経何度）？', choices:['東経120度','東経130度','東経135度','東経140度'], answer:2 },
-    { id:'g07', text:'北海道の道庁所在地は？', choices:['函館市','旭川市','釧路市','札幌市'], answer:3 },
-    { id:'g08', text:'三大洋のうち最も大きいのは？', choices:['大西洋','インド洋','北極海','太平洋'], answer:3 },
-    { id:'g09', text:'ユーラシア大陸の西端に位置する国は？', choices:['スペイン','フランス','ポルトガル','イギリス'], answer:2 },
-    { id:'g10', text:'オーストラリア大陸の中央部に広がる気候帯は？', choices:['熱帯','温帯','乾燥帯','冷帯'], answer:2 },
-    { id:'g11', text:'本州・四国・九州・北海道のうち面積が最も大きいのは？', choices:['本州','四国','九州','北海道'], answer:0 },
-    { id:'g12', text:'アフリカ大陸のナイル川が注ぐ海は？', choices:['大西洋','インド洋','地中海','紅海'], answer:2 },
-  ],
-  history: [
-    { id:'h01', text:'鎌倉幕府を開いたのは誰？', choices:['平清盛','源義経','後白河上皇','源頼朝'], answer:3 },
-    { id:'h02', text:'東大寺に安置されている巨大な仏像の名称は？', choices:['釈迦如来像','薬師如来像','阿弥陀如来像','盧遮那仏（大仏）'], answer:3 },
-    { id:'h03', text:'江戸幕府の初代将軍は？', choices:['徳川秀忠','徳川家光','豊臣秀吉','徳川家康'], answer:3 },
-    { id:'h04', text:'「天下布武」を掲げた戦国武将は？', choices:['豊臣秀吉','徳川家康','武田信玄','織田信長'], answer:3 },
-    { id:'h05', text:'743年に土地の私有を認めた法令は？', choices:['大宝律令','班田収授法','荘園整理令','墾田永年私財法'], answer:3 },
-    { id:'h06', text:'「源氏物語」を書いた平安時代の女性は？', choices:['清少納言','和泉式部','藤原道長','紫式部'], answer:3 },
-    { id:'h07', text:'1185年、壇ノ浦の戦いで滅んだのは？', choices:['源氏','藤原氏','橘氏','平氏'], answer:3 },
-    { id:'h08', text:'1192年、源頼朝が就いた役職は？', choices:['関白','太政大臣','摂政','征夷大将軍'], answer:3 },
-    { id:'h09', text:'「冠位十二階」を制定した人物は？', choices:['天武天皇','藤原鎌足','中大兄皇子','聖徳太子'], answer:3 },
-    { id:'h10', text:'奈良に都が置かれた時代を何という？', choices:['飛鳥時代','弥生時代','平安時代','奈良時代'], answer:3 },
-    { id:'h11', text:'1600年、関ヶ原の戦いで勝利したのは？', choices:['豊臣秀頼','石田三成','毛利輝元','徳川家康'], answer:3 },
-    { id:'h12', text:'645年の大化の改新を主導したのは？', choices:['聖徳太子','天武天皇','藤原道長','中大兄皇子'], answer:3 },
-  ]
-};
+   問題データは questions.js に定義（先に読み込むこと）
+   ============================================================ */
 
 // ========== 英雄データ ==========
 
@@ -56,19 +24,34 @@ const CHARACTERS = [
   { id:'goshirakawa',name:'後白河上皇', rarity:'N',   icon:'📜', atk:50, def:65, int:80, weight:14 },
 ];
 
-// ========== 敵データ ==========
+// ========== 敵データ（教科別） ==========
 
 const ENEMIES = {
-  geography: [
-    { name:'大地封神',   icon:'🌋', maxHp:80,  reward:15, stage:'STAGE 1 / 地理' },
-    { name:'海峡の幻獣', icon:'🌊', maxHp:100, reward:20, stage:'STAGE 2 / 地理' },
-    { name:'砂漠の竜帝', icon:'🏜️', maxHp:130, reward:30, stage:'STAGE 3 / 地理' },
+  '国語': [
+    { name:'言霊の封神',  icon:'📚', maxHp:80,  reward:15, stage:'STAGE 1 / 国語' },
+    { name:'文字の魔王',  icon:'✒️', maxHp:100, reward:20, stage:'STAGE 2 / 国語' },
+    { name:'古語の覇者',  icon:'📜', maxHp:130, reward:30, stage:'STAGE 3 / 国語' },
   ],
-  history: [
-    { name:'忘却の魔将', icon:'💀', maxHp:80,  reward:15, stage:'STAGE 1 / 歴史' },
-    { name:'時の封魔王', icon:'⏳', maxHp:100, reward:20, stage:'STAGE 2 / 歴史' },
-    { name:'蒼穹の覇者', icon:'⚡', maxHp:130, reward:30, stage:'STAGE 3 / 歴史' },
-  ]
+  '数学': [
+    { name:'数式の封神',  icon:'🔢', maxHp:80,  reward:15, stage:'STAGE 1 / 数学' },
+    { name:'方程式の竜',  icon:'📐', maxHp:100, reward:20, stage:'STAGE 2 / 数学' },
+    { name:'関数の暴君',  icon:'📊', maxHp:130, reward:30, stage:'STAGE 3 / 数学' },
+  ],
+  '理科': [
+    { name:'元素の封魔神', icon:'🔬', maxHp:80,  reward:15, stage:'STAGE 1 / 理科' },
+    { name:'化学の竜皇',  icon:'⚗️', maxHp:100, reward:20, stage:'STAGE 2 / 理科' },
+    { name:'法則の覇者',  icon:'⚡', maxHp:130, reward:30, stage:'STAGE 3 / 理科' },
+  ],
+  '社会': [
+    { name:'歴史の封神',  icon:'🗺️', maxHp:80,  reward:15, stage:'STAGE 1 / 社会' },
+    { name:'地理の魔将',  icon:'🌍', maxHp:100, reward:20, stage:'STAGE 2 / 社会' },
+    { name:'封印の覇者',  icon:'⚔️', maxHp:130, reward:30, stage:'STAGE 3 / 社会' },
+  ],
+  '英語': [
+    { name:'言語の封神',  icon:'🌐', maxHp:80,  reward:15, stage:'STAGE 1 / 英語' },
+    { name:'文法の魔王',  icon:'📝', maxHp:100, reward:20, stage:'STAGE 2 / 英語' },
+    { name:'異邦の覇者',  icon:'🗣️', maxHp:130, reward:30, stage:'STAGE 3 / 英語' },
+  ],
 };
 
 // ========== 必殺技 ==========
@@ -93,12 +76,20 @@ let gs = {
 };
 
 let battle = {
-  field: 'history', enemyIdx: 0,
+  grade: '1', semester: '前期', subject: '社会',
+  enemyIdx: 0,
   enemyHp: 100, playerHp: 100,
   questions: [], qIdx: 0,
   combo: 0, specialGauge: 0,
   answered: false, earnedOrbs: 0, correctCount: 0,
 };
+
+// ========== 選択状態 ==========
+
+let selectStep     = 0;   // 0=学年 1=学期 2=教科 3=モード
+let selectedGrade    = null;
+let selectedSemester = null;
+let selectedSubject  = null;
 
 let modalTargetChar = null;
 let targetSlot = null;
@@ -137,15 +128,116 @@ function renderTitleStats() {
     `💎 ${gs.orbs} オーブ　👥 ${owned}/${CHARACTERS.length} 英雄　⚔ ${gs.totalVictories} 勝`;
 }
 
+// ========== 選択フロー ==========
+
+function showSelectScreen() {
+  selectStep = 0;
+  selectedGrade = selectedSemester = selectedSubject = null;
+  renderSelectStep();
+  showScreen('select-screen');
+}
+
+function selectBack() {
+  if (selectStep === 0) { showScreen('title-screen'); return; }
+  selectStep--;
+  renderSelectStep();
+}
+
+function renderSelectStep() {
+  const titles = ['学年を選べ', '学期を選べ', '教科を選べ', '出撃モードを選べ'];
+  document.getElementById('select-title').textContent = titles[selectStep];
+
+  const bc = [];
+  if (selectedGrade)    bc.push('中学' + selectedGrade + '年');
+  if (selectedSemester) bc.push(selectedSemester);
+  if (selectedSubject)  bc.push(selectedSubject);
+  document.getElementById('select-breadcrumb').textContent = bc.join(' › ');
+
+  const content = document.getElementById('select-step-content');
+
+  if (selectStep === 0) {
+    content.innerHTML = `
+      <div class="select-grid">
+        <button class="select-card" onclick="selectGrade('1')">
+          <div class="select-card-icon">🏫</div>
+          <div class="select-card-name">中学1年</div>
+        </button>
+        <button class="select-card" onclick="selectGrade('2')">
+          <div class="select-card-icon">🎓</div>
+          <div class="select-card-name">中学2年</div>
+        </button>
+      </div>`;
+
+  } else if (selectStep === 1) {
+    content.innerHTML = `
+      <div class="select-grid">
+        <button class="select-card" onclick="selectSemester('前期')">
+          <div class="select-card-icon">🌸</div>
+          <div class="select-card-name">前期</div>
+          <div class="select-card-sub">4月〜9月</div>
+        </button>
+        <button class="select-card" onclick="selectSemester('後期')">
+          <div class="select-card-icon">🍂</div>
+          <div class="select-card-name">後期</div>
+          <div class="select-card-sub">10月〜3月</div>
+        </button>
+      </div>`;
+
+  } else if (selectStep === 2) {
+    const subjects = [
+      { id:'国語', icon:'📖' },
+      { id:'数学', icon:'📐' },
+      { id:'理科', icon:'🔬' },
+      { id:'社会', icon:'🌍' },
+      { id:'英語', icon:'🌐' },
+    ];
+    content.innerHTML = `
+      <div class="select-grid subjects">
+        ${subjects.map(s => `
+          <button class="select-card" onclick="selectSubject('${s.id}')">
+            <div class="select-card-icon">${s.icon}</div>
+            <div class="select-card-name">${s.id}</div>
+          </button>`).join('')}
+      </div>`;
+
+  } else if (selectStep === 3) {
+    content.innerHTML = `
+      <div class="select-mode-grid">
+        <button class="select-mode-card normal" onclick="startNormalBattle()">
+          <div class="mode-icon">⚔</div>
+          <div class="mode-name">通常学習</div>
+          <div class="mode-desc">10問に挑戦してスコアを上げろ！</div>
+        </button>
+        <button class="select-mode-card vs" onclick="showVSLobby()">
+          <div class="mode-icon">👥</div>
+          <div class="mode-name">VS対戦</div>
+          <div class="mode-desc">友達と10問先取り対決！</div>
+        </button>
+      </div>`;
+  }
+}
+
+function selectGrade(g)    { selectedGrade    = g; selectStep = 1; renderSelectStep(); }
+function selectSemester(s) { selectedSemester = s; selectStep = 2; renderSelectStep(); }
+function selectSubject(s)  { selectedSubject  = s; selectStep = 3; renderSelectStep(); }
+
+function startNormalBattle() {
+  startBattle(selectedGrade, selectedSemester, selectedSubject);
+}
+
 // ========== バトル開始 ==========
 
-function startBattle(field) {
-  battle.field        = field;
-  battle.enemyIdx     = Math.floor(Math.random() * ENEMIES[field].length);
-  const enemy         = ENEMIES[field][battle.enemyIdx];
+function startBattle(grade, semester, subject) {
+  const pool = QUESTIONS[grade][semester][subject];
+
+  battle.grade        = grade;
+  battle.semester     = semester;
+  battle.subject      = subject;
+  battle.enemyIdx     = Math.floor(Math.random() * ENEMIES[subject].length);
+  const enemy         = ENEMIES[subject][battle.enemyIdx];
   battle.enemyHp      = enemy.maxHp;
   battle.playerHp     = calcPlayerHp();
-  battle.questions    = shuffleArray([...QUESTIONS[field]]).slice(0, 10);
+  battle.questions    = shuffleArray([...pool]).slice(0, 10);
   battle.qIdx         = 0;
   battle.combo        = 0;
   battle.specialGauge = 0;
@@ -232,7 +324,12 @@ function submitAnswer(selectedIdx, correctIdx, qId) {
     setTimeout(() => document.getElementById('battle-screen').classList.remove('shake'), 400);
     document.getElementById('battle-feedback').textContent = '❌ 不正解...';
     if (!gs.wrongIds.find(w => w.id === qId)) {
-      gs.wrongIds.push({ id: qId, field: battle.field });
+      gs.wrongIds.push({
+        id: qId,
+        grade:    battle.grade,
+        semester: battle.semester,
+        subject:  battle.subject,
+      });
       save();
     }
   }
@@ -296,7 +393,7 @@ function activateSpecial() {
 // ========== HUD更新 ==========
 
 function renderBattleHUD() {
-  const enemy  = ENEMIES[battle.field][battle.enemyIdx];
+  const enemy  = ENEMIES[battle.subject][battle.enemyIdx];
   const maxPhp = calcPlayerHp();
 
   document.getElementById('enemy-name').textContent    = enemy.name;
@@ -318,12 +415,12 @@ function endBattle(victory) {
   gs.totalBattles++;
   if (victory) {
     gs.totalVictories++;
-    battle.earnedOrbs += ENEMIES[battle.field][battle.enemyIdx].reward;
+    battle.earnedOrbs += ENEMIES[battle.subject][battle.enemyIdx].reward;
   }
   gs.orbs += battle.earnedOrbs;
   save();
 
-  const titleEl  = document.getElementById('result-title');
+  const titleEl = document.getElementById('result-title');
   titleEl.textContent = victory ? 'VICTORY!!' : 'DEFEAT...';
   titleEl.className   = 'result-title ' + (victory ? 'victory' : 'defeat');
   document.getElementById('result-subtitle').textContent =
@@ -387,7 +484,7 @@ function showGachaResult(char) {
 }
 
 function renderCollection() {
-  const grid = document.getElementById('collection-grid');
+  const grid  = document.getElementById('collection-grid');
   const owned = CHARACTERS.filter(c => gs.collected[c.id]);
   if (owned.length === 0) {
     grid.innerHTML = '<div style="font-size:12px;color:#553366;grid-column:1/-1;text-align:center;padding:16px">まだ英雄がいない</div>';
@@ -508,11 +605,11 @@ function renderReviewScreen() {
     return;
   }
   list.innerHTML = gs.wrongIds.map(w => {
-    const pool = QUESTIONS[w.field];
-    const q    = pool ? pool.find(q => q.id === w.id) : null;
+    const q = QUESTION_MAP[w.id];
     if (!q) return '';
+    const label = w.grade ? `中${w.grade}年 ${w.semester} ${w.subject}` : (w.field || '');
     return `<div class="review-item">
-      <div class="review-item-field">${w.field === 'geography' ? '🌍 地理' : '⚔️ 歴史'}</div>
+      <div class="review-item-field">${label}</div>
       <div class="review-item-text">${escHtml(q.text)}</div>
       <div style="font-size:11px;color:#553366;margin-top:4px">正解: ${escHtml(q.choices[q.answer])}</div>
     </div>`;
@@ -523,7 +620,7 @@ function renderReviewScreen() {
 
 function inviteViaLine(roomId) {
   const url  = window.location.origin + window.location.pathname + '?room=' + roomId;
-  const text = 'ドリルバトルで勝負だ！下のリンクからルームに入ってこい！【招待コード：' + roomId + '】 ' + url;
+  const text = 'ドリルバトルで勝負だ！【招待コード：' + roomId + '】 ' + url;
   window.location.href =
     'https://social-plugins.line.me/lineit/share?url=' +
     encodeURIComponent(url) + '&text=' + encodeURIComponent(text);
