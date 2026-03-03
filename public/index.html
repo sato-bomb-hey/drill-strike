@@ -1,89 +1,568 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>CYBER QUIZ — サイバーパンク定期テスト対策</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/12.10.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/12.10.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/12.10.0/firebase-performance-compat.js"></script>
-    <!-- 
-      initialize the SDK after all desired features are loaded, set useEmulator to false
-      to avoid connecting the SDK to running emulators.
-    -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+  <!-- Firebase SDKs (Hosting auto-serve) -->
+  <script defer src="/__/firebase/10.14.1/firebase-app-compat.js"></script>
+  <script defer src="/__/firebase/10.14.1/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.14.1/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/10.14.1/firebase-analytics-compat.js"></script>
 
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Scanlines overlay -->
+  <div class="scanlines"></div>
+
+  <!-- Achievement popup -->
+  <div id="achievement-popup" class="achievement-popup">
+    <span id="achievement-icon" class="achievement-icon"></span>
+    <div class="achievement-text">
+      <div class="achievement-label">ACHIEVEMENT UNLOCKED!</div>
+      <div id="achievement-name" class="achievement-name"></div>
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
+  </div>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+  <!-- ============================================================
+       AUTH SCREEN
+       ============================================================ -->
+  <div id="auth-screen" class="screen">
+    <div class="corner-tl"></div><div class="corner-tr"></div>
+    <div class="corner-bl"></div><div class="corner-br"></div>
+    <div class="auth-content">
+      <div class="auth-logo glitch-text">CYBER QUIZ</div>
+      <div class="auth-sub">CYBERPUNK DRILL SYSTEM</div>
 
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
-  </body>
+      <div class="auth-tabs">
+        <button id="tab-login" class="auth-tab active" onclick="showAuthTab('login')">LOGIN</button>
+        <button id="tab-register" class="auth-tab" onclick="showAuthTab('register')">REGISTER</button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="auth-form-login" class="auth-form" style="display:flex">
+        <input id="login-email" class="cyber-input" type="email" placeholder="EMAIL" autocomplete="email">
+        <input id="login-password" class="cyber-input" type="password" placeholder="PASSWORD" autocomplete="current-password">
+        <div id="login-error" class="auth-error"></div>
+        <button class="cyber-btn primary" onclick="handleLogin()">▶ LOGIN</button>
+      </div>
+
+      <!-- Register Form -->
+      <div id="auth-form-register" class="auth-form" style="display:none">
+        <input id="reg-name" class="cyber-input" type="text" placeholder="NAME (表示名)" autocomplete="nickname">
+        <input id="reg-email" class="cyber-input" type="email" placeholder="EMAIL" autocomplete="email">
+        <input id="reg-password" class="cyber-input" type="password" placeholder="PASSWORD (6文字以上)" autocomplete="new-password">
+        <div id="reg-error" class="auth-error"></div>
+        <button class="cyber-btn primary" onclick="handleRegister()">▶ CREATE ACCOUNT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       TITLE SCREEN
+       ============================================================ -->
+  <div id="title-screen" class="screen">
+    <div class="corner-tl"></div><div class="corner-tr"></div>
+    <div class="corner-bl"></div><div class="corner-br"></div>
+
+    <div id="user-display" class="user-display"></div>
+
+    <div class="title-content">
+      <div class="title-logo glitch-text">CYBER QUIZ</div>
+      <div class="title-sub">CYBERPUNK DRILL SYSTEM</div>
+      <canvas id="title-canvas" width="160" height="160"></canvas>
+      <div id="title-stats" class="title-stats"></div>
+      <div class="title-buttons">
+        <button class="cyber-btn primary" onclick="showScreen('select-screen'); showStep('grade')">▶ START GAME</button>
+        <button class="cyber-btn" onclick="startReviewMode()">⚠ 苦手問題</button>
+        <button class="cyber-btn" onclick="showRanking()">🏆 RANKING</button>
+        <button class="cyber-btn battle-lobby-btn" onclick="showBattleLobby()">⚔ VS BATTLE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SELECT SCREEN
+       ============================================================ -->
+  <div id="select-screen" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" onclick="showScreen('title-screen')">◀ BACK</button>
+      <div class="header-title">// SELECT MODE</div>
+    </div>
+
+    <!-- Step: Grade -->
+    <div id="step-grade" class="select-step active">
+      <div class="step-label">▸ 学年を選択</div>
+      <div class="select-grid grade-grid">
+        <button class="select-card" onclick="selectGrade(1)">
+          <span class="card-icon">🎓</span>
+          <span class="card-label">中1</span>
+          <span class="card-sub">GRADE 1</span>
+        </button>
+        <button class="select-card" onclick="selectGrade(2)">
+          <span class="card-icon">🎓</span>
+          <span class="card-label">中2</span>
+          <span class="card-sub">GRADE 2</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step: Semester -->
+    <div id="step-semester" class="select-step">
+      <div class="step-label">▸ 学期を選択</div>
+      <div class="select-grid semester-grid">
+        <button class="select-card" onclick="selectSemester(1)">
+          <span class="card-icon">🌸</span>
+          <span class="card-label">前期</span>
+          <span class="card-sub">SEMESTER 1</span>
+        </button>
+        <button class="select-card" onclick="selectSemester(2)">
+          <span class="card-icon">🍂</span>
+          <span class="card-label">後期</span>
+          <span class="card-sub">SEMESTER 2</span>
+        </button>
+      </div>
+      <button class="back-btn" onclick="showStep('grade')">◀ BACK</button>
+    </div>
+
+    <!-- Step: Subject -->
+    <div id="step-subject" class="select-step">
+      <div class="step-label">▸ 教科を選択</div>
+      <div class="select-grid subject-grid">
+        <button class="select-card" onclick="selectSubject('na')">
+          <span class="card-icon">📖</span>
+          <span class="card-label">国語</span>
+          <span class="card-sub">JAPANESE</span>
+        </button>
+        <button class="select-card" onclick="selectSubject('ma')">
+          <span class="card-icon">📐</span>
+          <span class="card-label">数学</span>
+          <span class="card-sub">MATH</span>
+        </button>
+        <button class="select-card" onclick="selectSubject('en')">
+          <span class="card-icon">🌐</span>
+          <span class="card-label">英語</span>
+          <span class="card-sub">ENGLISH</span>
+        </button>
+        <button class="select-card" onclick="selectSubject('sc')">
+          <span class="card-icon">🔬</span>
+          <span class="card-label">理科</span>
+          <span class="card-sub">SCIENCE</span>
+        </button>
+        <button class="select-card" onclick="selectSubject('so')">
+          <span class="card-icon">🌏</span>
+          <span class="card-label">社会</span>
+          <span class="card-sub">SOCIAL</span>
+        </button>
+      </div>
+      <button class="back-btn" onclick="showStep('semester')">◀ BACK</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       QUIZ SCREEN
+       ============================================================ -->
+  <div id="quiz-screen" class="screen">
+    <!-- HUD Bar -->
+    <div class="quiz-hud">
+      <div class="hud-left">
+        <span class="hud-label">SCORE</span>
+        <span id="hud-score" class="hud-value neon-cyan">000</span>
+      </div>
+      <div class="hud-center">
+        <span class="hud-label">Q</span>
+        <span id="hud-qnum" class="hud-value">01</span>
+      </div>
+      <div class="hud-right">
+        <span class="hud-label">STREAK</span>
+        <span id="hud-streak" class="hud-value neon-green">0</span>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar-wrap">
+      <div id="progress-bar" class="progress-bar"></div>
+      <div id="boss-indicators" class="boss-indicators"></div>
+    </div>
+
+    <!-- Question Card -->
+    <div class="question-card">
+      <div class="corner-tl"></div><div class="corner-tr"></div>
+      <div class="corner-bl"></div><div class="corner-br"></div>
+      <div id="question-category" class="question-category"></div>
+      <div id="question-text" class="question-text"></div>
+    </div>
+
+    <!-- Choices -->
+    <div id="choices-grid" class="choices-grid"></div>
+
+    <!-- Explanation -->
+    <div id="explanation-area" class="explanation-area">
+      <div class="explanation-label">// EXPLANATION</div>
+      <div id="explanation-text" class="explanation-text"></div>
+    </div>
+
+    <!-- Next Button -->
+    <button id="next-btn" class="cyber-btn primary next-btn" onclick="nextQuestion()" style="display:none">NEXT ▶</button>
+  </div>
+
+  <!-- ============================================================
+       SCORE SCREEN (Round Score)
+       ============================================================ -->
+  <div id="score-screen" class="screen">
+    <div class="score-content">
+      <div class="score-title glitch-text">ROUND CLEAR</div>
+      <div class="score-display">
+        <span class="score-label">SCORE</span>
+        <span id="round-score" class="score-value">000</span>
+        <span class="score-max">pt</span>
+      </div>
+      <div id="score-breakdown" class="score-breakdown"></div>
+      <div class="score-buttons">
+        <button class="cyber-btn primary" onclick="continueNextRound()">▶ CONTINUE</button>
+        <button class="cyber-btn" onclick="showScreen('title-screen')">⌂ TITLE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       REVIEW SCREEN
+       ============================================================ -->
+  <div id="review-screen" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" onclick="showScreen('title-screen')">◀ BACK</button>
+      <div class="header-title">// 苦手問題リスト</div>
+    </div>
+    <div id="review-list" class="review-list"></div>
+  </div>
+
+  <!-- ============================================================
+       RESULT SCREEN (Session Result)
+       ============================================================ -->
+  <div id="result-screen" class="screen">
+    <div class="result-content">
+      <div class="result-title glitch-text">SESSION RESULT</div>
+      <div id="result-stats" class="result-stats"></div>
+      <div id="result-rank" class="result-rank"></div>
+      <div class="result-buttons">
+        <button class="cyber-btn primary" onclick="playAgain()">▶ PLAY AGAIN</button>
+        <button class="cyber-btn" onclick="showScreen('title-screen')">⌂ TITLE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       RANKING SCREEN
+       ============================================================ -->
+  <div id="ranking-screen" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" onclick="showScreen('title-screen')">◀ BACK</button>
+      <div class="header-title">// RANKING</div>
+    </div>
+    <div id="ranking-list" class="ranking-list"></div>
+  </div>
+
+  <!-- ============================================================
+       BOSS OVERLAY
+       ============================================================ -->
+  <div id="boss-overlay" class="overlay">
+    <!-- Boss Header -->
+    <div class="boss-header">
+      <div id="boss-name" class="boss-name glitch-text"></div>
+      <div class="boss-hp-wrap">
+        <span class="boss-hp-label">BOSS HP</span>
+        <div class="boss-hp-bar-outer">
+          <div id="boss-hp-bar" class="boss-hp-bar"></div>
+        </div>
+        <span id="boss-hp-num" class="boss-hp-num">10</span>
+      </div>
+    </div>
+
+    <!-- Boss Canvas -->
+    <div class="boss-canvas-wrap">
+      <canvas id="boss-canvas" width="160" height="160"></canvas>
+      <div id="boss-hit-flash" class="boss-hit-flash"></div>
+      <div id="boss-damage-num" class="boss-damage-num"></div>
+    </div>
+
+    <!-- Boss Score HUD -->
+    <div class="boss-score-hud">
+      <div class="hud-item">
+        <span class="hud-label">CORRECT</span>
+        <span id="boss-correct" class="hud-value neon-green">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">WRONG</span>
+        <span id="boss-wrong" class="hud-value neon-red">0</span>
+      </div>
+      <div class="hud-item">
+        <span class="hud-label">REMAIN</span>
+        <span id="boss-remaining" class="hud-value">10</span>
+      </div>
+    </div>
+
+    <!-- Boss Question -->
+    <div class="boss-question-card">
+      <div id="boss-question-category" class="question-category"></div>
+      <div id="boss-question-text" class="boss-question-text"></div>
+    </div>
+
+    <!-- Boss Choices -->
+    <div class="boss-choices">
+      <div id="boss-choices-grid" class="choices-grid"></div>
+    </div>
+
+    <!-- Boss Explanation -->
+    <div id="boss-explanation-area" class="explanation-area">
+      <div class="explanation-label">// EXPLANATION</div>
+      <div id="boss-explanation-text" class="explanation-text"></div>
+    </div>
+
+    <!-- Boss Next Button -->
+    <button id="boss-next-btn" class="cyber-btn primary next-btn" onclick="bossNextQuestion()" style="display:none">NEXT ▶</button>
+
+    <!-- Battle Item Bar -->
+    <div id="battle-item-bar" class="battle-item-bar"></div>
+  </div>
+
+  <!-- ============================================================
+       GACHA OVERLAY
+       ============================================================ -->
+  <div id="gacha-overlay" class="overlay">
+    <div class="gacha-content">
+      <div class="gacha-title glitch-text">LOOT DROP</div>
+
+      <div class="gacha-machine">
+        <canvas id="gacha-canvas" width="128" height="128"></canvas>
+      </div>
+
+      <div id="gacha-result" class="gacha-result" style="display:none">
+        <div id="gacha-rarity" class="gacha-rarity"></div>
+        <div id="gacha-item-icon" class="gacha-item-icon"></div>
+        <div id="gacha-item-name" class="gacha-item-name"></div>
+        <div id="gacha-item-desc" class="gacha-item-desc"></div>
+      </div>
+
+      <div class="gacha-buttons">
+        <button id="gacha-spin-btn" class="cyber-btn primary" onclick="spinGacha()">▶ SPIN</button>
+        <button id="gacha-close-btn" class="cyber-btn" onclick="closeGacha()" style="display:none">▶ CONTINUE</button>
+      </div>
+
+      <div id="gacha-collection" class="gacha-collection"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BATTLE LOBBY SCREEN
+       ============================================================ -->
+  <div id="battle-lobby-screen" class="screen">
+    <div class="corner-tl"></div><div class="corner-tr"></div>
+    <div class="corner-bl"></div><div class="corner-br"></div>
+    <button class="back-btn" style="position:absolute;top:14px;left:14px" onclick="showScreen('title-screen')">◀ BACK</button>
+    <div class="battle-lobby-content">
+      <div class="battle-lobby-title glitch-text">VS BATTLE</div>
+      <div class="battle-lobby-sub">PvP 対戦モード</div>
+      <div class="battle-lobby-buttons">
+        <button class="cyber-btn primary battle-lobby-btn" onclick="showBattleCreate()">⚔ ルームを作成</button>
+        <button class="cyber-btn battle-lobby-btn" onclick="showBattleJoin()">▶ ルームに参加</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BATTLE SETUP SCREEN (Host: subject selection)
+       ============================================================ -->
+  <div id="battle-setup-screen" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" onclick="showScreen('battle-lobby-screen')">◀ BACK</button>
+      <div class="header-title">// BATTLE SETUP</div>
+    </div>
+
+    <!-- Step: Grade -->
+    <div id="battle-step-grade" class="select-step active">
+      <div class="step-label">▸ 学年を選択</div>
+      <div class="select-grid grade-grid">
+        <button class="select-card" onclick="battleSelectGrade(1)">
+          <span class="card-icon">🎓</span>
+          <span class="card-label">中1</span>
+          <span class="card-sub">GRADE 1</span>
+        </button>
+        <button class="select-card" onclick="battleSelectGrade(2)">
+          <span class="card-icon">🎓</span>
+          <span class="card-label">中2</span>
+          <span class="card-sub">GRADE 2</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step: Semester -->
+    <div id="battle-step-semester" class="select-step">
+      <div class="step-label">▸ 学期を選択</div>
+      <div class="select-grid semester-grid">
+        <button class="select-card" onclick="battleSelectSemester(1)">
+          <span class="card-icon">🌸</span>
+          <span class="card-label">前期</span>
+          <span class="card-sub">SEMESTER 1</span>
+        </button>
+        <button class="select-card" onclick="battleSelectSemester(2)">
+          <span class="card-icon">🍂</span>
+          <span class="card-label">後期</span>
+          <span class="card-sub">SEMESTER 2</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step: Subject -->
+    <div id="battle-step-subject" class="select-step">
+      <div class="step-label">▸ 教科を選択</div>
+      <div class="select-grid subject-grid">
+        <button class="select-card" onclick="battleSelectSubject('na')">
+          <span class="card-icon">📖</span>
+          <span class="card-label">国語</span>
+          <span class="card-sub">JAPANESE</span>
+        </button>
+        <button class="select-card" onclick="battleSelectSubject('ma')">
+          <span class="card-icon">📐</span>
+          <span class="card-label">数学</span>
+          <span class="card-sub">MATH</span>
+        </button>
+        <button class="select-card" onclick="battleSelectSubject('en')">
+          <span class="card-icon">🌐</span>
+          <span class="card-label">英語</span>
+          <span class="card-sub">ENGLISH</span>
+        </button>
+        <button class="select-card" onclick="battleSelectSubject('sc')">
+          <span class="card-icon">🔬</span>
+          <span class="card-label">理科</span>
+          <span class="card-sub">SCIENCE</span>
+        </button>
+        <button class="select-card" onclick="battleSelectSubject('so')">
+          <span class="card-icon">🌏</span>
+          <span class="card-label">社会</span>
+          <span class="card-sub">SOCIAL</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BATTLE JOIN SCREEN
+       ============================================================ -->
+  <div id="battle-join-screen" class="screen">
+    <div class="corner-tl"></div><div class="corner-tr"></div>
+    <div class="corner-bl"></div><div class="corner-br"></div>
+    <button class="back-btn" style="position:absolute;top:14px;left:14px" onclick="showScreen('battle-lobby-screen')">◀ BACK</button>
+    <div class="join-content">
+      <div class="join-label">ROOM CODE を入力</div>
+      <input id="join-room-code" class="cyber-input room-input" type="tel" maxlength="5" placeholder="00000" inputmode="numeric">
+      <div id="join-error" class="join-error"></div>
+      <button class="cyber-btn primary" onclick="doJoinRoom()">▶ JOIN ROOM</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BATTLE ROOM SCREEN (Waiting room)
+       ============================================================ -->
+  <div id="battle-room-screen" class="screen">
+    <div class="corner-tl"></div><div class="corner-tr"></div>
+    <div class="corner-bl"></div><div class="corner-br"></div>
+    <button class="back-btn" style="position:absolute;top:14px;left:14px" onclick="cancelRoom()">◀ CANCEL</button>
+    <div class="room-content">
+      <div class="room-label">ROOM CODE</div>
+      <div id="room-code-display" class="room-code-display">...</div>
+      <button id="line-invite-btn" class="line-invite-btn" onclick="inviteViaLine()" style="display:none">
+        <span class="line-icon">LINE</span>
+        LINEで招待する
+      </button>
+      <div id="room-status" class="room-status"></div>
+      <div id="room-opponent-info" class="room-opponent-info"></div>
+      <button id="battle-room-ready-btn" class="cyber-btn primary" onclick="setBattleReady()" style="display:none">▶ READY!</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BATTLE SCREEN (Active PvP)
+       ============================================================ -->
+  <div id="battle-screen" class="screen" style="padding:0">
+    <!-- Opponent HUD -->
+    <div class="battle-opp-hud battle-hud">
+      <div id="battle-opp-name" class="battle-player-name">OPPONENT</div>
+      <div class="battle-hp-wrap">
+        <div class="battle-hp-bar-outer">
+          <div id="battle-opp-hp-bar" class="battle-hp-bar"></div>
+        </div>
+        <span id="battle-opp-hp-num" class="battle-hp-num">100</span>
+      </div>
+    </div>
+
+    <!-- Effects Layer -->
+    <div class="battle-effects-layer">
+      <div id="battle-hit-effect" class="battle-hit-effect"></div>
+      <div id="battle-combo-effect" class="battle-combo-effect"></div>
+    </div>
+
+    <!-- Question Area -->
+    <div class="battle-question-area">
+      <div id="battle-qnum" class="battle-qnum"></div>
+      <div id="battle-question-text" class="battle-question-text"></div>
+    </div>
+
+    <!-- Choices -->
+    <div class="battle-question-area" style="padding-top:0">
+      <div id="battle-choices-grid" class="choices-grid"></div>
+    </div>
+
+    <!-- Next / Smoke buttons -->
+    <div style="padding:4px 14px;display:flex;gap:8px;align-items:center">
+      <button id="battle-next-btn" class="cyber-btn primary" onclick="battleNextQuestion()" style="display:none;flex:1">NEXT ▶</button>
+      <button id="battle-smoke-btn" class="battle-skill-btn" onclick="activateSmoke()">💨 SMOKE</button>
+    </div>
+
+    <!-- My HUD -->
+    <div class="battle-my-hud battle-hud" style="margin-top:auto">
+      <div id="battle-my-name" class="battle-player-name">YOU</div>
+      <div class="battle-hp-wrap">
+        <span id="battle-my-hp-num" class="battle-hp-num">100</span>
+        <div class="battle-hp-bar-outer">
+          <div id="battle-my-hp-bar" class="battle-hp-bar my-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Smoke Overlay -->
+    <div id="smoke-overlay" class="smoke-overlay">
+      <div class="smoke-text">💨 SMOKE SCREEN!</div>
+      <div class="smoke-sub">相手の画面が見えない！</div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BATTLE RESULT SCREEN
+       ============================================================ -->
+  <div id="battle-result-screen" class="screen">
+    <div class="corner-tl"></div><div class="corner-tr"></div>
+    <div class="corner-bl"></div><div class="corner-br"></div>
+    <div class="battle-result-content">
+      <div id="battle-result-title" class="battle-result-title glitch-text"></div>
+      <div id="battle-result-sub" class="battle-result-sub"></div>
+      <div id="battle-result-stats" class="battle-result-stats"></div>
+      <div class="battle-result-buttons">
+        <button class="cyber-btn primary battle-lobby-btn" onclick="showBattleLobby()">▶ BATTLE AGAIN</button>
+        <button class="cyber-btn" onclick="showScreen('title-screen')">⌂ TITLE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="questions.js"></script>
+  <script src="explanations.js"></script>
+  <script src="game.js"></script>
+  <script src="battle.js"></script>
+</body>
 </html>
