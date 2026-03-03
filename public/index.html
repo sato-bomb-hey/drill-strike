@@ -7,6 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <!-- Firebase SDK (Firebase Hosting が /__/firebase/ で自動提供) -->
+  <script src="/__/firebase/10.14.1/firebase-app-compat.js"></script>
+  <script src="/__/firebase/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="/__/firebase/init.js"></script>
 </head>
 <body>
 
@@ -30,6 +34,9 @@
       </button>
       <button class="btn-ghost" onclick="showScreen('review-screen')">
         <span class="btn-icon">📜</span> 呪縛された記憶
+      </button>
+      <button class="btn-vs" onclick="showVSLobby()">
+        <span class="btn-icon">⚔</span> VS対戦
       </button>
     </div>
   </div>
@@ -226,6 +233,110 @@
   </div>
 </div>
 
+<!-- ========== プレイヤー名入力オーバーレイ ========== -->
+<div id="name-input-overlay" class="name-input-overlay" style="display:none">
+  <div class="name-input-box">
+    <h3 class="name-input-title">⚔ プレイヤー名</h3>
+    <p class="name-input-desc">VS対戦で表示される名前を入力してください</p>
+    <input type="text" id="name-input-field" class="name-input-field"
+           placeholder="名前（最大8文字）" maxlength="8">
+    <button class="btn-primary" onclick="submitPlayerName()">決定</button>
+  </div>
+</div>
+
+<!-- ========== VS ロビー画面 ========== -->
+<div id="vs-lobby-screen" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="showScreen('title-screen')">◀ 戻る</button>
+    <h2 class="screen-title">VS対戦</h2>
+  </div>
+  <div class="vs-lobby-content">
+    <p class="vs-player-greeting">⚔ <span id="vs-lobby-name"></span> として出陣</p>
+
+    <div class="vs-section">
+      <h3 class="vs-section-title">🏰 ルームを作成</h3>
+      <p class="vs-section-desc">あなたがホストとなりコードを発行します</p>
+      <button class="btn-primary" onclick="createVSRoom()">ルームを作成する</button>
+    </div>
+
+    <div class="vs-divider">— または —</div>
+
+    <div class="vs-section">
+      <h3 class="vs-section-title">🚪 ルームに参加</h3>
+      <p class="vs-section-desc">友達から届いたコードを入力して参加</p>
+      <div class="vs-join-row">
+        <input type="text" id="vs-join-code" class="vs-code-input"
+               placeholder="5文字のコード" maxlength="5">
+        <button class="btn-secondary vs-join-btn" onclick="joinVSRoom()">参加</button>
+      </div>
+    </div>
+
+    <div class="vs-rule">🏆 10問先取りで勝利！</div>
+  </div>
+</div>
+
+<!-- ========== VS 待機画面 ========== -->
+<div id="vs-waiting-screen" class="screen">
+  <div class="screen-header">
+    <h2 class="screen-title">相手を待っています</h2>
+  </div>
+  <div class="vs-waiting-content">
+    <div class="vs-code-box">
+      <p class="vs-code-label">ルームコード</p>
+      <div class="vs-code-display" id="vs-room-code">XXXXX</div>
+    </div>
+    <button id="copy-code-btn" class="btn-ghost" onclick="copyRoomCode()">📋 コードをコピー</button>
+    <button class="line-invite-btn" onclick="inviteViaLineVS()">
+      <span class="line-icon-badge">LINE</span> 友達を招待する
+    </button>
+    <div class="vs-waiting-anim">⏳ 接続待機中…</div>
+    <button class="btn-ghost" style="margin-top:12px" onclick="cancelRoom()">キャンセル</button>
+  </div>
+</div>
+
+<!-- ========== VS バトル画面 ========== -->
+<div id="vs-battle-screen" class="screen">
+  <div class="vs-hud">
+    <div class="vs-hud-player">
+      <span class="vs-hud-name" id="vs-my-name">あなた</span>
+      <div class="vs-hud-bar-outer">
+        <div class="vs-hud-bar vs-my-bar" id="vs-my-bar"></div>
+      </div>
+      <span class="vs-hud-score"><span id="vs-my-correct">0</span>/10</span>
+    </div>
+    <div class="vs-hud-vs">VS</div>
+    <div class="vs-hud-player opp">
+      <span class="vs-hud-name" id="vs-opp-name">相手</span>
+      <div class="vs-hud-bar-outer">
+        <div class="vs-hud-bar vs-opp-bar" id="vs-opp-bar"></div>
+      </div>
+      <span class="vs-hud-score"><span id="vs-opp-correct">0</span>/10</span>
+    </div>
+  </div>
+
+  <div class="vs-question-area">
+    <div class="vs-q-num" id="vs-q-num">Q1</div>
+    <div class="vs-q-text" id="vs-q-text">問題文</div>
+  </div>
+
+  <div class="vs-choices-area" id="vs-choices-area"></div>
+  <div class="vs-feedback" id="vs-feedback"></div>
+</div>
+
+<!-- ========== VS 結果画面 ========== -->
+<div id="vs-result-screen" class="screen">
+  <div class="vs-result-content">
+    <div class="vs-result-title" id="vs-result-title">勝利！！</div>
+    <div class="vs-result-score" id="vs-result-score"></div>
+    <div class="result-buttons">
+      <button class="btn-primary" onclick="showVSLobby()">⚔ もう一度</button>
+      <button class="btn-ghost"   onclick="leaveVSRoom()">⌂ タイトル</button>
+    </div>
+  </div>
+</div>
+
+<script src="firebase-config.js"></script>
 <script src="game.js"></script>
+<script src="battle.js"></script>
 </body>
 </html>

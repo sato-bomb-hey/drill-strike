@@ -534,6 +534,187 @@ html, body {
   padding: 2px 5px; border-radius: 4px;
 }
 
+/* ========== VS 対戦ボタン（タイトル画面） ========== */
+.btn-vs {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 14px 20px;
+  background: linear-gradient(135deg, #220066, #4400cc);
+  color: var(--gold);
+  font-family: var(--font); font-size: 16px; font-weight: 700;
+  border: 2px solid #6600ff; border-radius: var(--radius);
+  cursor: pointer; transition: all 0.15s;
+  box-shadow: 0 0 16px rgba(100,0,255,0.5);
+}
+.btn-vs:active { transform: scale(0.97); }
+
+/* ========== プレイヤー名入力オーバーレイ ========== */
+.name-input-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.85);
+  display: flex; align-items: center; justify-content: center;
+}
+.name-input-box {
+  background: var(--bg2);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 24px;
+  width: min(340px, 90vw);
+  display: flex; flex-direction: column; gap: 12px;
+  box-shadow: 0 0 30px rgba(100,0,255,0.4);
+}
+.name-input-title { color: var(--gold); font-size: 18px; font-weight: 900; text-align: center; }
+.name-input-desc  { color: var(--white); font-size: 13px; text-align: center; opacity: 0.8; }
+.name-input-field {
+  width: 100%; padding: 12px 14px;
+  background: var(--bg); color: var(--white);
+  border: 2px solid var(--border); border-radius: var(--radius);
+  font-family: var(--font); font-size: 16px;
+  outline: none; text-align: center;
+}
+.name-input-field:focus { border-color: var(--gold); }
+
+/* ========== VS ロビー画面 ========== */
+.vs-lobby-content {
+  flex: 1; overflow-y: auto; padding: 16px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.vs-player-greeting {
+  color: var(--gold); font-size: 16px; font-weight: 700;
+  text-align: center; padding: 10px;
+  background: rgba(255,204,0,0.08); border-radius: var(--radius);
+}
+.vs-section {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.vs-section-title { color: var(--white); font-size: 15px; font-weight: 700; }
+.vs-section-desc  { color: var(--gray); font-size: 12px; }
+.vs-divider { color: var(--gray); font-size: 13px; text-align: center; padding: 4px 0; }
+.vs-join-row { display: flex; gap: 8px; }
+.vs-code-input {
+  flex: 1; padding: 12px 10px;
+  background: var(--bg); color: var(--white);
+  border: 2px solid var(--border); border-radius: var(--radius);
+  font-family: var(--font); font-size: 18px; font-weight: 700;
+  text-align: center; letter-spacing: 4px; text-transform: uppercase;
+  outline: none;
+}
+.vs-code-input:focus { border-color: var(--gold); }
+.vs-join-btn { padding: 12px 18px; white-space: nowrap; }
+.vs-rule {
+  color: var(--gold); font-size: 14px; font-weight: 700;
+  text-align: center; padding: 12px;
+  background: rgba(255,204,0,0.06);
+  border: 1px solid rgba(255,204,0,0.2); border-radius: var(--radius);
+}
+
+/* ========== VS 待機画面 ========== */
+.vs-waiting-content {
+  flex: 1; padding: 20px 16px;
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+.vs-code-box {
+  background: var(--bg2); border: 2px solid var(--border);
+  border-radius: 12px; padding: 20px 24px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  width: 100%;
+}
+.vs-code-label { color: var(--gray); font-size: 13px; font-weight: 700; letter-spacing: 2px; }
+.vs-code-display {
+  color: var(--gold); font-size: 36px; font-weight: 900;
+  letter-spacing: 8px; text-shadow: 0 0 16px rgba(255,204,0,0.6);
+}
+.vs-waiting-anim {
+  color: var(--white); font-size: 14px; opacity: 0.7;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{ opacity:0.4 } 50%{ opacity:1 } }
+
+/* ========== VS バトル画面 ========== */
+#vs-battle-screen {
+  display: flex; flex-direction: column;
+}
+.vs-hud {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+}
+.vs-hud-player {
+  flex: 1; display: flex; flex-direction: column; gap: 4px;
+}
+.vs-hud-player.opp { align-items: flex-end; }
+.vs-hud-name  { color: var(--white); font-size: 12px; font-weight: 700; }
+.vs-hud-score { color: var(--gold);  font-size: 12px; font-weight: 700; }
+.vs-hud-bar-outer {
+  width: 100%; height: 6px;
+  background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;
+}
+.vs-my-bar {
+  height: 100%; width: 0; border-radius: 3px;
+  background: linear-gradient(90deg, #0055cc, #2277ff);
+  transition: width 0.3s ease;
+}
+.vs-opp-bar {
+  height: 100%; width: 0; border-radius: 3px;
+  background: linear-gradient(90deg, #cc2200, #ff4422);
+  transition: width 0.3s ease;
+  margin-left: auto;
+}
+.vs-hud-player.opp .vs-hud-bar-outer { direction: rtl; }
+.vs-hud-vs {
+  color: var(--red-bright); font-size: 14px; font-weight: 900;
+  text-shadow: 0 0 10px rgba(255,34,68,0.6);
+  padding: 0 4px;
+}
+
+.vs-question-area {
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.vs-q-num  { color: var(--gold); font-size: 13px; font-weight: 700; }
+.vs-q-text {
+  color: var(--white); font-size: 16px; font-weight: 700; line-height: 1.5;
+}
+
+.vs-choices-area {
+  flex: 1; padding: 0 12px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  align-content: start;
+}
+.vs-choice-btn {
+  padding: 14px 8px; min-height: 64px;
+  background: var(--bg2); color: var(--white);
+  border: 2px solid var(--border); border-radius: var(--radius);
+  font-family: var(--font); font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all 0.12s; line-height: 1.3;
+}
+.vs-choice-btn:active:not(:disabled) {
+  background: var(--bg3); border-color: var(--gold); transform: scale(0.97);
+}
+.vs-choice-btn:disabled { opacity: 0.5; cursor: default; }
+
+.vs-feedback {
+  padding: 10px 16px; text-align: center;
+  font-size: 18px; font-weight: 900; min-height: 42px;
+}
+.vs-feedback.correct { color: #44ff88; }
+.vs-feedback.wrong   { color: var(--red-bright); }
+
+/* ========== VS 結果画面 ========== */
+.vs-result-content {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 20px; padding: 24px;
+}
+.vs-result-title {
+  font-size: 48px; font-weight: 900; letter-spacing: 4px;
+}
+.vs-result-title.win  { color: var(--gold); text-shadow: 0 0 30px rgba(255,204,0,0.8); }
+.vs-result-title.lose { color: var(--gray);  text-shadow: none; }
+.vs-result-score {
+  color: var(--white); font-size: 15px; font-weight: 700; text-align: center;
+}
+
 /* ========== スクロールバー ========== */
 ::-webkit-scrollbar { width: 3px; background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); }
